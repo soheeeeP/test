@@ -1,0 +1,10 @@
+name: New Workflow
+
+on: [pull_request]
+
+jobs:
+  new:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Step1
+        run: echo "step1"
