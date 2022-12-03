@@ -13,7 +13,7 @@ jobs:
         id: fetch-tag
         run: echo "::set-output name=ref::$(git rev-list --tags --skip=0 --max-count=1)"
       
-      - run: ${{ steps.fetch-tag.outputs.ref }}
+      - run: echo ${{ steps.fetch-tag.outputs.ref }}
 
       - name: Checkout with Hash
         uses: actions/checkout@v3
