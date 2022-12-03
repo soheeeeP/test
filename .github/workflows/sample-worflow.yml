@@ -1,0 +1,28 @@
+name: Sample Workflow
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  stage1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: stage1 step(1)
+        run: echo "stage1"
+      - name: stage1 step(2)
+        run: echo "stage2"
+  stage2:
+    runs-on: ubuntu-latest
+    needs: stage1
+    steps:
+      - name: stage2 step(1)
+        run: exit 1
+  stage3:
+    runs-on: ubuntu-latest
+    needs: [ stage1, stage2 ]
+    if: ${{ always() && contains(needs.*.result, 'failure') }}
+    steps:
+      - name: Stage3 in the case of 'failure'
+        run: echo "failure stage executed"
