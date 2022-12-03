@@ -6,15 +6,17 @@ on:
       - master
 
 jobs:
-  stage1:
+  checkout-hash:
     runs-on: ubuntu-latest
     steps:
-      - name: stage1 step(1)
-        run: echo "stage1"
+      - name: Checkout with Hash
+        id: checkout-hash
+        uses: actions/checkout@v3
+        with:
+          ref: $(git rev-list --tags --skip=0 --max-count=1)
 
   rollback:
     runs-on: ubuntu-latest
-    needs: stage1
     steps:
       - name: Fetch Latest Release
         id: latest-release
