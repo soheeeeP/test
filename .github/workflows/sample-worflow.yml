@@ -9,6 +9,9 @@ jobs:
   checkout-hash:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
       - name: Fetch Latest Tag
         id: fetch-tag
         run: |
