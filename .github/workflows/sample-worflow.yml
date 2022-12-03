@@ -1,6 +1,10 @@
 name: Sample Workflow
 
-on: [pull_request]
+on:
+  pull_request:
+  schedule:
+    - cron: '0 0 * * 1'
+
 
 jobs:
   rollback:
