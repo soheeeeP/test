@@ -9,25 +9,13 @@ jobs:
   checkout-hash:
     runs-on: ubuntu-latest
     steps:
+      - name: Fetch Latest Tag
+        id: fetch-tag
+        run: echo "::set-output name=ref::$(git rev-list --tags --skip=0 --max-count=1)"
+      
+      - run: ${{ steps.fetch-tag.outputs.ref }}
+
       - name: Checkout with Hash
-        id: checkout-hash
         uses: actions/checkout@v3
         with:
-          ref: $(git rev-list --tags --skip=0 --max-count=1)
-
-  rollback:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Fetch Latest Release
-        id: latest-release
-        uses: thebritican/fetch-latest-release@v1.0.3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Checkout Latest Release source code
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ steps.latest-release.outputs.tag-name }}
-
-      - name: Debugging
-        run: echo ${{ steps.latest-release.outputs.tag-name }}
+          ref: ${{ steps.fetch-tag.outputs.ref }}
