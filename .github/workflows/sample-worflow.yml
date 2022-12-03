@@ -9,6 +9,11 @@ jobs:
   rollback:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
       - run: |
           echo "fuc"
 
@@ -20,9 +25,3 @@ jobs:
 
           echo "$(git rev-list --tags --max-count=1)"
           echo "$(git describe --tags `git rev-list --tags --max-count=1`)"
-          
-      - name: Checkout source code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          ref: $(git describe --tags `git rev-list --tags --max-count=1`)
