@@ -15,7 +15,13 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Echo Step1
+      - name: Echo schedule
+        run: |
+          echo ${{ fromJson('["schedule"]') }}
+          echo ${{ github.event_name }}
+
+      - name: Echo Step1 & if contains test
+        if: $ {{ contains(fromJson('["schedule"]'), github.event_name) }}
         run: |
           echo ${{ steps.latest.outputs.tag_name }}
 
