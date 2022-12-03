@@ -18,7 +18,7 @@ jobs:
     needs: stage1
     steps:
       - name: stage2 step(1)
-        run: exit 1
+        run: echo "test success stage2 ver."
   stage3:
     runs-on: ubuntu-latest
     needs: [ stage1, stage2 ]
