@@ -1,0 +1,10 @@
+version: "1"
+services:
+  backend:
+    container_name: backend
+    image: test:v1
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        ARG_VAR: sohee
