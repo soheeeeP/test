@@ -6,27 +6,20 @@ on:
       - master
 
 jobs:
-  checkout-hash:
+  rollback:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout source code
+      - name: Fetch Latest Release
+        id: latest-release
+        uses: thebritican/fetch-latest-release@v1.0.3
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: echo "${{ steps.latest-release.outputs.tag-name }}"
+
+      - name: Checkout Latest Release source code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Test
-        run: |
-          echo "$(git describe --abbrev=0 --tags)"
-          echo "$(git describe --tags `git rev-list --tags --max-count=1`)"
-          echo "${git describe --tags `git rev-list --tags --max-count=1`}"
-      - name: Fetch Latest Tag
-        id: fetch-tag
-        run: |
-          echo "TAG_NAME=$(git rev-list --tags --skip=0 --max-count=1)" >> $GITHUB_OUTPUT
+          ref: ${{ steps.latest-release.outputs.tag-name }}
 
-      - run: |
-          echo "${{ steps.fetch-tag.outputs.TAG_NAME }}"
-
-      - name: Checkout with Hash
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ steps.fetch-tag.outputs.TAG_NAME }}
