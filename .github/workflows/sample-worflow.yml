@@ -15,14 +15,12 @@ jobs:
       - name: Fetch Latest Tag
         id: fetch-tag
         run: |
-          echo "debugging statement"
-          TAG=$(git rev-list --tags --skip=0 --max-count=1)
-          echo "$TAG"
-          echo "::set-output name=ref::$TAG"
-      
-      - run: echo "${{ steps.fetch-tag.outputs.ref }}"
+          echo "TAG_NAME=$(git rev-list --tags --skip=0 --max-count=1)" >> $GITHUB_OUTPUT
+
+      - run: |
+          echo "${{ steps.fetch-tag.outputs.TAG_NAME }}"
 
       - name: Checkout with Hash
         uses: actions/checkout@v3
         with:
-          ref: ${{ steps.fetch-tag.outputs.ref }}
+          ref: ${{ steps.fetch-tag.outputs.TAG_NAME }}
