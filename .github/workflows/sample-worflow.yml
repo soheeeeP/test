@@ -11,7 +11,10 @@ jobs:
     steps:
       - name: Fetch Latest Tag
         id: fetch-tag
-        run: echo "::set-output name=ref::$(git rev-list --tags --skip=0 --max-count=1)"
+        run: |
+          TAG=$(git rev-list --tags --skip=0 --max-count=1)
+          echo $TAG
+          echo "::set-output name=ref::$TAG"
       
       - run: echo ${{ steps.fetch-tag.outputs.ref }}
 
