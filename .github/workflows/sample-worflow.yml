@@ -9,6 +9,11 @@ jobs:
   rollback:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
       - name: Fetch Latest Release
         id: latest-release
         uses: thebritican/fetch-latest-release@v1.0.3
