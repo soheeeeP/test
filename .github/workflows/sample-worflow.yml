@@ -34,7 +34,7 @@ jobs:
       - name: Auto Generate Changelog
         run: |
           python change.py --version "${{ steps.extract-version.outputs.version }}"
-          echo ::set-output name=body::"test_value"
+          echo ::set-output name=body::$(cat ./CHANGELOG_RELEASE.md)
         id: changelog
 
       - name: Create Release with Tag
@@ -44,5 +44,6 @@ jobs:
         with:
           tag_name: ${{ steps.extract-version.outputs.version }}
           release_name: ${{ steps.extract-version.outputs.version }}
-          body: ${{ steps.changelog.outputs.body }}
+          body: |
+            ${{ steps.changelog.outputs.body }}
           
