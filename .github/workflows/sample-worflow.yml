@@ -2,6 +2,7 @@ name: Sample Workflow
 
 on:
   pull_request:
+    types: [ opened, closed, edited, synchronize]
   schedule:
     - cron: '0 0 * * 1'
 
