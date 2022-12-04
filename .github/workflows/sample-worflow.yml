@@ -28,7 +28,7 @@ jobs:
 
       - name: Auto Generate Changelog
         run: |
-          python ./change.py --version ${{ steps.extract-version.outputs.version }}
+          python change.py --version "${{ steps.extract-version.outputs.version }}"
           echo ::set-output name=body::$(cat ./CHANGELOG_RELEASE.md)
         id: changelog
 
