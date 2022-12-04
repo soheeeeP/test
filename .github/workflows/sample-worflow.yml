@@ -10,27 +10,33 @@ jobs:
   rollback:
     runs-on: ubuntu-latest
     steps:
-      - id: latest
-        uses: thebritican/fetch-latest-release@v1.0.3
+      - name: Setup python
+        uses: actions/setup-python@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          python-version: "3.8"
 
-      - name: Echo schedule
+      - name: Extract version
         run: |
-          echo ${{ fromJson('["schedule"]') }}
-          echo ${{ github.event_name }}
+          version=$(echo '${{ github.event.pull_request.title }}' | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')
+          if [ -z $version ]; then
+            exit 1
+          else
+            echo "::set-output name=version:$version"
+          fi
+        id: extract-version
 
-      - name: Echo Step1 & if contains test
-        if: $ {{ contains(fromJson('["schedule"]'), github.event_name) }}
+      - name: Auto Generate Changelog
         run: |
-          echo ${{ steps.latest.outputs.tag_name }}
+          python ./change.py --version ${{ steps.extract-version.outputs.version }}
+          echo ::set-output name=body::$(cat ./CHANGELOG_RELEASE.md)
+        id: changelog
 
-      - uses: actions/checkout@v3
+      - name: Create Release with Tag
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          fetch-depth: 0
-          ref: ${{ steps.latest.outputs.tag_name }}
-
-      - name: Echo Step2
-        run: |
-          echo "$(git rev-list --tags --max-count=1)"
-          echo "$(git describe --tags `git rev-list --tags --max-count=1`)"
+          tag_name: ${{ steps.extract-version.outputs.version }}
+          release_name: ${{ steps.extract-version.outputs.version }}
+          body: ${{ steps.changelog.outputs.body }}
+          
