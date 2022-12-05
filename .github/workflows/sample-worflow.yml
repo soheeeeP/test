@@ -52,4 +52,6 @@ jobs:
           release_name: ${{ steps.extract-version.outputs.version }}
           body: |
             ${{ steps.changelog.outputs.content }}
+          draft: false
+  
           
