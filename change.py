@@ -49,6 +49,11 @@ def main():
     m = re.match(r'^(https://)[a-zA-Z0-9-]+\.(com)+/[a-zA-Z-_.]+/[a-zA-Z-_]+', repo_url, re.S)
 
     prev_tag, tag = get_prev_tag(), get_tag()
+    print(prev_tag)
+    print(tag)
+
+    content = get_change_log_content(prev_tag, tag)
+    print(content)
     commit_log_url = f"{m.group().strip()}/compare/{prev_tag}...{tag}"
 
     try:
@@ -58,9 +63,9 @@ def main():
 
         output_path = Path('./CHANGELOG_RELEASE.md')
         output_text = (
-            "## %s\n-------------\n### Features\n%s\n"
+            "## %s\n### Features\n%s\n"
             "### Full Commit Logs\nCheck out [the full commit logs](%s) until this release (%s).\n\n"
-            % (args.version, get_change_log_content(prev_tag, tag), commit_log_url, args.version)
+            % (args.version, content, commit_log_url, args.version)
         )
         input_path.write_text(output_text + "\n\n" + input_text)
         output_path.write_text(output_text)
