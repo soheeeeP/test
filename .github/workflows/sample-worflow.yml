@@ -34,6 +34,7 @@ jobs:
       - name: Auto Generate Changelog
         run: |
           python change.py --version "${{ steps.extract-version.outputs.version }}"
+          
 
           RELEASEBODY=$(awk -v RS='Release ' '/'$VERSION':(.*)/ {print $0}' CHANGELOG_RELEASE.md)
           RELEASEBODY="${RELEASEBODY//'%'/'%25'}"
@@ -49,8 +50,5 @@ jobs:
         with:
           tag_name: ${{ steps.extract-version.outputs.version }}
           release_name: ${{ steps.extract-version.outputs.version }}
-          body: |
-            ${{ steps.changelog.outputs.content }}
-          draft: false
-  
-          
+          body_render_type:  markdown # rst and markdown support 
+          body_render_path:  ./CHANGELOG_RELEASE.md
