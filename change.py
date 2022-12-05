@@ -30,7 +30,7 @@ def get_repo_url():
 
 def get_change_log_content(prev_tag, tag):
     p = subprocess.run(['git', 'log', '--oneline', '--format=" * %s"', f'{prev_tag}..{tag}'], capture_output=True)
-    content = p.stdout.decode().strip("\"")
+    content = re.sub('"\n"', '\n', p.stdout.decode().strip()).strip('\"')
     return content
 
 
@@ -49,8 +49,8 @@ def main():
     m = re.match(r'^(https://)[a-zA-Z0-9-]+\.(com)+/[a-zA-Z-_.]+/[a-zA-Z-_]+', repo_url, re.S)
 
     prev_tag, tag = get_prev_tag(), get_tag()
-    print(prev_tag)
-    print(tag)
+    print('prev', prev_tag)
+    print('tag', tag)
 
     content = get_change_log_content(prev_tag, tag)
     print(content)
