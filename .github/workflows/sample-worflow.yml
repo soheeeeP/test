@@ -1,26 +1,51 @@
 name: Sample Workflow
 
-on: [pull_request]
+on:
+  pull_request:
+    types: [ opened, closed, edited, synchronize]
+  schedule:
+    - cron: '0 0 * * 1'
+
 
 jobs:
   rollback:
     runs-on: ubuntu-latest
     steps:
-      - id: latest
-        uses: thebritican/fetch-latest-release@v1.0.3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Echo Step1
-        run: |
-          echo ${{ steps.latest.outputs.tag_name }}
-
-      - uses: actions/checkout@v3
+      - name: Checkout source code
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          ref: ${{ steps.latest.outputs.tag_name }}
 
-      - name: Echo Step2
+      - name: Setup python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.8"
+
+      - name: Extract version
         run: |
-          echo "$(git rev-list --tags --max-count=1)"
-          echo "$(git describe --tags `git rev-list --tags --max-count=1`)"
+          version=$(echo '${{ github.event.pull_request.title }}' | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')
+          if [ -z $version ]; then
+            exit 1
+          else
+            echo "::set-output name=version::$version"
+          fi
+        id: extract-version
+
+      - name: Auto Generate Changelog
+        run: |
+          python change.py --version "${{ steps.extract-version.outputs.version }}"
+          
+
+          RELEASEBODY=$(awk -v RS='Release ' '/'$VERSION':(.*)/ {print $0}' CHANGELOG_RELEASE.md)
+          RELEASEBODY="${RELEASEBODY//'%'/'%25'}"
+          RELEASEBODY="${RELEASEBODY//$'\n'/'%0A'}"
+          RELEASEBODY="${RELEASEBODY//$'\r'/'%0D'}"  
+          echo ::set-output name=content::$RELEASEBODY
+        id: changelog
+
+      - name: Create Release with Tag
+        uses: ncipollo/release-action@v1
+        with:
+          name: ${{ steps.extract-version.outputs.version }}
+          tag: ${{ steps.extract-version.outputs.version }}
+          bodyFile: "./CHANGELOG_RELEASE.md"
