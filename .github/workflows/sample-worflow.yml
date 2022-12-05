@@ -34,7 +34,13 @@ jobs:
       - name: Auto Generate Changelog
         run: |
           python change.py --version "${{ steps.extract-version.outputs.version }}"
-          echo ::set-output name=body::$(cat ./CHANGELOG_RELEASE.md)
+          echo ::set-output name=content::$(cat ./CHANGELOG_RELEASE.md)
+
+          RELEASEBODY=$(awk -v RS='Release ' '/'$VERSION':(.*)/ {print $0}' CHANGELOG_RELEASE.md)
+          RELEASEBODY="${RELEASEBODY//'%'/'%25'}"
+          RELEASEBODY="${RELEASEBODY//$'\n'/'%0A'}"
+          RELEASEBODY="${RELEASEBODY//$'\r'/'%0D'}"  
+          echo "$RELEASEBODY"
         id: changelog
 
       - name: Create Release with Tag
@@ -45,5 +51,5 @@ jobs:
           tag_name: ${{ steps.extract-version.outputs.version }}
           release_name: ${{ steps.extract-version.outputs.version }}
           body: |
-            ${{ steps.changelog.outputs.body }}
+            ${{ steps.changelog.outputs.content }}
           
