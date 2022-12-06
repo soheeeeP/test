@@ -6,6 +6,9 @@ jobs:
   tagging:
     runs-on: ubuntu-latest
     steps:
+      - name: Sparse-checkout
+        uses: lablup/sparse-checkout@v1
+  
       - name: Extract version
         id: extract-version
         run: |
