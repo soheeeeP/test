@@ -9,36 +9,9 @@ jobs:
       - name: Sparse-checkout
         uses: lablup/sparse-checkout@v1
   
-      - name: Extract version
-        id: extract-version
+      - name: Get Tag
         run: |
-          echo "::set-output name=version::"1.1.1""
-
-      - name: Auto Generate Changelog
-        id: changelog
-        if: ${{ steps.extract-version.outputs.version }}
-        run: |
-          python3 change.py --version "${{ steps.extract-version.outputs.version }}"
-  
-      - name: Get Changed Files
-        id: changed-files
-        if: ${{ steps.extract-version.outputs.version }}
-        uses: tj-actions/changed-files@v31
-        with:
-          files: |
-            ./CHANGELOG.md
-
-      - name: Auto Commit Updated Changelog
-        id: auto-commit-push
-        if: ${{ (steps.changed-files.outputs.any_changed) && (steps.extract-version.outputs.version) }}
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: "update: CHANGELOG.md"
-          file_pattern: "CHANGELOG.md"
-  
-      - name: Create Release with Tag
-        uses: ncipollo/release-action@v1
-        with:
-          tag: ${{ steps.extract-version.outputs.version }}
-          name: ${{ steps.extract-version.outputs.version }}
-          bodyFile: "./CHANGELOG_RELEASE.md"
+          echo "$(git rev-parse --abbrev-ref HEAD)"
+          echo "$(git rev-parse --abbrev-ref HEAD~1)"
+          
+          echo "$(git describe --abbrev=0 --tags $(git rev-list --tags --skip=1 --max-count=1))"
