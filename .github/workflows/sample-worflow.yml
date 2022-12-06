@@ -6,14 +6,27 @@ jobs:
   tagging:
     runs-on: ubuntu-latest
     steps:
-      - name: First
-        id: first
+      - name: Extract version
+        id: extract-version
         run: |
-          echo "1.1.1"
+          echo "::set-output name=version::"1.1.1""
 
-      - name: Test
-        if: ${{ steps.first.outputs.version }}
+      - name: Auto Generate Changelog
+        id: changelog
+        if: ${{ steps.extract-version.outputs.version }}
         run: |
-          echo ${{ github.base_ref }}
-          echo ${{ github.ref }}
-          echo ${{ github.head_ref }}
+          python3 change.py --version "${{ steps.extract-version.outputs.version }}"
+  
+      - name: Get Changed Files
+        id: changed-files
+        if: ${{ steps.extract-version.outputs.version }}
+        uses: tj-actions/changed-files@v31
+        with:
+          files: CHANGELOG.md
+
+      - name: Auto Commit Updated Changelog
+        id: auto-commit-push
+        if: ${{ (steps.changed-files.outputs.any_changed) && (steps.extract-version.outputs.version) }}
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "update: CHANGELOG.md"
