@@ -25,7 +25,8 @@ jobs:
         if: ${{ steps.extract-version.outputs.version }}
         uses: tj-actions/changed-files@v31
         with:
-          files: CHANGELOG.md
+          files: |
+            ./CHANGELOG.md
 
       - name: Auto Commit Updated Changelog
         id: auto-commit-push
@@ -33,3 +34,4 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: "update: CHANGELOG.md"
+          file_pattern: "CHANGELOG.md"
