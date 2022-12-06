@@ -9,8 +9,7 @@ jobs:
       - name: First
         id: first
         run: |
-          version=$(echo '${{ github.event.pull_request.title }}' | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')
-          echo "::set-output name=version::$version"
+          echo "1.1.1"
 
       - name: Test
         if: ${{ steps.first.outputs.version }}
