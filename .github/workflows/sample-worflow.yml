@@ -12,4 +12,7 @@ jobs:
     if: ${{ contains(github.base_ref, 'master') || contains(github.ref, 'master') }}
     steps:
       - name: Test
-        run: echo "test"
+        run: |
+          echo ${{ github.base_ref }}
+          echo ${{ github.ref }}
+          echo ${{ github.head_ref }}
