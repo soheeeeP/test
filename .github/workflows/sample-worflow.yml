@@ -35,3 +35,10 @@ jobs:
         with:
           commit_message: "update: CHANGELOG.md"
           file_pattern: "CHANGELOG.md"
+  
+      - name: Create Release with Tag
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.extract-version.outputs.version }}
+          name: ${{ steps.extract-version.outputs.version }}
+          bodyFile: "./CHANGELOG_RELEASE.md"
