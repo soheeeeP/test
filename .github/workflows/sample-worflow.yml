@@ -1,15 +1,10 @@
 name: Auto Release
 
-on:
-  push:
-  pull_request:
-    types:
-      - closed
+on: [push, pull_request]
 
 jobs:
   tagging:
     runs-on: ubuntu-latest
-    if: ${{ contains(github.base_ref, 'master') || contains(github.ref, 'master') }}
     steps:
       - name: Test
         run: |
