@@ -20,7 +20,6 @@ def get_tag():
     tag = p.stdout.decode().strip()
     return tag
 
-
 def get_repo_url():
     p = subprocess.run(['git', 'remote', 'get-url', 'origin'], capture_output=True)
     url = p.stdout.decode().strip()
@@ -51,6 +50,7 @@ def main():
     tag = get_tag()
     output_path = Path('./CHANGELOG.md')
     output_text = get_change_log_content(prev_tag, tag)
+
     print(output_text)
     output_path.write_text(output_text)
 
