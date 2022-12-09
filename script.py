@@ -14,6 +14,12 @@ def get_prev_tag():
     tag = p.stdout.decode().strip()
     return tag
 
+def get_tag():
+    gh_cli = ['git', 'rev-parse', '--abbrev-ref', 'HEAD']
+    p = subprocess.run(gh_cli, capture_output=True)
+    tag = p.stdout.decode().strip()
+    return tag
+
 
 def get_repo_url():
     p = subprocess.run(['git', 'remote', 'get-url', 'origin'], capture_output=True)
@@ -42,8 +48,9 @@ def main():
     m = re.match(r'^(https://)[a-zA-Z0-9-]+\.(com)+/[a-zA-Z-_.]+/[a-zA-Z-_]+', repo_url, re.S)
 
     prev_tag = get_prev_tag()
+    tag = get_tag()
     output_path = Path('./CHANGELOG.md')
-    output_text = get_change_log_content(prev_tag, args.tag)
+    output_text = get_change_log_content(prev_tag, tag)
     print(output_text)
     output_path.write_text(output_text)
 
