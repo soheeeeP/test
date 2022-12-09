@@ -14,5 +14,9 @@ jobs:
           echo ${{ github.ref }}          
           echo ${{ github.ref_name }}
           echo ${{ github.head_ref }}
-          TAG=$(git rev-parse --abbrev-ref HEAD)
-          echo "$TAG"
+
+          echo "$(git rev-parse --abbrev-ref HEAD)"
+
+          REV=$(git rev-list --tags --skip=1 --max-count=1)
+          echo $REV
+          echo "$(git describe --abbrev=0 --tags $REV)"
