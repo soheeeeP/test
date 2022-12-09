@@ -19,6 +19,5 @@ jobs:
       - name: Run Test Script
         run: |
           TAGS_LIST=($(python3 script.py))
-          echo "$TAGS_LIST[0]"
-          echo "$TAGS_LIST[1]"
-          echo "$TAGS_LIST[2]"
+          echo "$TAGS_LIST"
+          echo $(python3 script.py)
