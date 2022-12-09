@@ -19,12 +19,17 @@ jobs:
       - name: Auto Generate Changelog
         id: changelog
         run: |
-          python3 script.py --tag ${{ github.head_ref }}
+          CHANGELOG=$(python3 ./script.py --tag "${{ github.head_ref }}")
+          echo "$CHANGELOG"
       
       - name: Get Changed Files
         id: changed-files
         uses: tj-actions/changed-files@v31
 
+      - name: Check Changed Files
+        run: |
+          echo "${{ steps.changed-files.outputs.all_changed_files }}"
+  
       - name: Auto Commit Updated Changelog
         id: auto-commit-push
         if: ${{ steps.changed-files.outputs.any_changed }}

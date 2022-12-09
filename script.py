@@ -42,13 +42,11 @@ def main():
     m = re.match(r'^(https://)[a-zA-Z0-9-]+\.(com)+/[a-zA-Z-_.]+/[a-zA-Z-_]+', repo_url, re.S)
 
     prev_tag = get_prev_tag()
-    try:
-        output_path = Path('./CHANGELOG.md')
-        output_path.touch(exist_ok=True)
-        output_text = get_change_log_content(prev_tag, args.tag)
-        output_path.write_text(output_text)
-    except IOError as e:
-        sys.exit(1)
+    output_path = Path('./CHANGELOG.md')
+    output_text = get_change_log_content(prev_tag, args.tag)
+    print(output_text)
+    output_path.write_text(output_text)
+
 
 
 if __name__ == '__main__':
