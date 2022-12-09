@@ -25,7 +25,7 @@ jobs:
 
 
       - name: Condition Check
-        if: (github.event.action == 'closed') && ${{ steps.test.outputs.version }}
+        if: ${{ github.event.action == 'closed' && steps.test.outputs.version == true }}
         run: |
           echo ${{ github.event.action == 'closed' }}
           echo ${{ github.event.pull_request.merged }}
