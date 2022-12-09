@@ -13,5 +13,6 @@ jobs:
           echo ${{ github.base_ref }}
           echo ${{ github.ref }}          
           echo ${{ github.ref_name }}
-          echo $(git rev-parse --abbrev-ref HEAD)
-          echo $(git rev-parse --abbrev-ref HEAD~1)
+          echo ${{ github.head_ref }}
+          TAG=$(git rev-parse --abbrev-ref HEAD)
+          echo "$TAG"
