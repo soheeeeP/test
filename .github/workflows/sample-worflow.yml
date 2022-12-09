@@ -6,6 +6,8 @@ jobs:
   tagging:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
       - name: Test
         run: |
           echo ${{ github.base_ref }}
