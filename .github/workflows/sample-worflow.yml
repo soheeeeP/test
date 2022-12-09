@@ -17,23 +17,6 @@ jobs:
           echo ${{ github.head_ref }}
 
       - name: Auto Generate Changelog
-        id: changelog
-        run: |
-          CHANGELOG=$(python3 ./script.py --tag "${{ github.head_ref }}")
-          echo "$CHANGELOG"
-      
-      - name: Get Changed Files
-        id: changed-files
-        uses: tj-actions/changed-files@v31
-
-      - name: Check Changed Files
-        run: |
-          echo "${{ steps.changed-files.outputs.all_changed_files }}"
-  
-      - name: Auto Commit Updated Changelog
-        id: auto-commit-push
-        if: ${{ steps.changed-files.outputs.any_changed }}
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: "update: CHANGELOG.md"
-          file_pattern: "CHANGELOG.md"
+        run:
+          echo $(git log --oneline --format=" * %s" v1..${{github.head_ref}})
+          
