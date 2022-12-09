@@ -15,8 +15,6 @@ jobs:
           echo ${{ github.ref }}          
           echo ${{ github.ref_name }}
           echo ${{ github.head_ref }}
-
-      - name: Auto Generate Changelog
-        run:
-          echo $(git log --oneline --format=" * %s" v1..${{github.head_ref}})
-          
+          echo ${{ github.event.action == 'closed' }}
+          echo ${{ github.event.pull_request.merged }}
+          echo (github.event.pull_request.merged)
