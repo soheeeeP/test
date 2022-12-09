@@ -16,8 +16,20 @@ jobs:
           echo ${{ github.ref_name }}
           echo ${{ github.head_ref }}
 
-      - name: Run Test Script
+      - name: Auto Generate Changelog
+        id: changelog
         run: |
-          TAGS_LIST=($(python3 script.py))
-          echo "$TAGS_LIST"
-          echo $(python3 script.py)
+          python3 script.py --tag ${{ github.head_ref }}
+      
+      - name: Get Changed Files
+        id: changed-files
+        if: ${{ steps.extract-version.outputs.version }}
+        uses: tj-actions/changed-files@v31
+
+      - name: Auto Commit Updated Changelog
+        id: auto-commit-push
+        if: ${{ steps.changed-files.outputs.any_changed }} && ${{ steps.extract-version.outputs.version }}
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "update: CHANGELOG.md"
+          file_pattern: "CHANGELOG.md"
