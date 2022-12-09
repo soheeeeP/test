@@ -11,3 +11,5 @@ jobs:
           echo ${{ github.base_ref }}
           echo ${{ github.ref }}          
           echo ${{ github.head_ref }}
+          echo ${{ github.ref_name }}
+          echo ${{ github.ref_type }}
