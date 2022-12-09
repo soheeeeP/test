@@ -15,6 +15,15 @@ jobs:
           echo ${{ github.event.action == 'closed' }}
           echo ${{ github.event.pull_request.merged }}
 
+      - name: Action Check
+        if: (github.event.action == 'closed')
+        run: echo "action check"
+
+      - name: Output Check
+        if: ${{ steps.test.outputs.version }}
+        run: echo "output check"
+
+
       - name: Condition Check
         if: (github.event.action == 'closed') && ${{ steps.test.outputs.version }}
         run: |
