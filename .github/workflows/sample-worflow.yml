@@ -1,11 +1,18 @@
 name: Auto Release
 
-on: [pull_request]
+on:
+  pull_request:
+  schedule:
+    - cron: '0-59 * * * *'
+
 
 jobs:
   tagging:
     runs-on: ubuntu-latest
     steps:
+      - name: Cron Activated?
+        run: echo "cron activated"
+
       - name: Checkout source code
         uses: actions/checkout@v3
 
@@ -14,6 +21,7 @@ jobs:
         run: |
           echo ${{ github.event.action == 'closed' }}
           echo ${{ github.event.pull_request.merged }}
+          echo "::set-output name=version::$version"
 
       - name: Action Check
         if: (github.event.action == 'closed')
