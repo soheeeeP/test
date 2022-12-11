@@ -1,13 +1,39 @@
 name: Auto Release
 
-on: [push, pull_request]
+on:
+  pull_request:
+  schedule:
+    - cron: '0-59 * * * *'
+
 
 jobs:
   tagging:
     runs-on: ubuntu-latest
     steps:
-      - name: Test
+      - name: Cron Activated?
+        run: echo "cron activated"
+
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Test Github variables
+        id: test
         run: |
-          echo ${{ github.base_ref }}
-          echo ${{ github.ref }}          
-          echo ${{ github.head_ref }}
+          echo ${{ github.event.action == 'closed' }}
+          echo ${{ github.event.pull_request.merged }}
+          echo "::set-output name=version::$version"
+
+      - name: Action Check
+        if: (github.event.action == 'closed')
+        run: echo "action check"
+
+      - name: Output Check
+        if: ${{ steps.test.outputs.version }}
+        run: echo "output check"
+
+
+      - name: Condition Check
+        if: ${{ github.event.action == 'closed' && steps.test.outputs.version == true }}
+        run: |
+          echo ${{ github.event.action == 'closed' }}
+          echo ${{ github.event.pull_request.merged }}
