@@ -3,7 +3,7 @@ name: Auto Release
 on:
   pull_request:
   schedule:
-    - cron: '0-59 * * * *'
+    - cron: '*/5 * * * *'
 
 
 jobs:
