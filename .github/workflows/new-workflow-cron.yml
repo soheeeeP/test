@@ -1,0 +1,39 @@
+name: Cron Test
+
+on:
+  pull_request:
+  schedule:
+    - cron: '*/5 * * * *'
+
+
+jobs:
+  tagging:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cron Activated?
+        run: |
+          echo "cron activated"
+          echo "${{ github.event.schedule }}"
+
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Test Github variables
+        id: test
+        run: |
+          echo ${{ github.event.action == 'closed' }}
+          echo ${{ github.event.pull_request.merged }}
+
+          echo "::set-output name=version::$version"
+
+      - name: Output Check
+        if: ${{ steps.test.outputs.version }}
+        run: echo "output check"
+
+
+      - name: Condition Check
+        if: ${{ github.event.action == 'closed'}}
+        run: |
+          echo ${{ github.event.action == 'closed' }}
+          echo ${{ github.event.pull_request.merged }}
+
